@@ -46,7 +46,7 @@ const Dashboard = props => {
   const { classes } = props;
 
   // CTX store
-  const [allChats] = React.useContext(CTX);
+  const { allChats, sendChatAction, user } = React.useContext(CTX);
 
   const topics = Object.keys(allChats);
 
@@ -96,6 +96,14 @@ const Dashboard = props => {
             variant="contained"
             color="primary"
             className={classes.button}
+            onClick={() => {
+              sendChatAction({
+                msg: textValue,
+                from: user,
+                topic: activeTopic,
+              });
+              changeTextValue('');
+            }}
           >
             Send
           </Button>
