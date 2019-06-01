@@ -11,12 +11,14 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import { CTX } from './Store';
+
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     margin: '50px',
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   flex: {
     display: 'flex',
@@ -42,7 +44,16 @@ const styles = theme => ({
 
 const Dashboard = props => {
   const { classes } = props;
+
+  // CTX store
+  const [allChats] = React.useContext(CTX);
+
+  const topics = Object.keys(allChats);
+
+  // local state
   const [textValue, changeTextValue] = React.useState('');
+  const [activeTopic, setActiveTopic] = React.useState(topics[0]);
+
   return (
     <div>
       <Paper className={classes.root} elevation={1}>
@@ -50,23 +61,26 @@ const Dashboard = props => {
           Chat App
         </Typography>
         <Typography component="h5" variant="h5">
-          Topic Placeholder
+          {activeTopic}
         </Typography>
         <div className={classes.flex}>
           <div className={classes.topicsWindow}>
             <List>
-              {['general', 'random', 'sports'].map(topic => (
+              {topics.map(topic => (
                 <ListItem button key={topic}>
-                  <ListItemText primary={topic} />
+                  <ListItemText
+                    primary={topic}
+                    onClick={() => setActiveTopic(topic)}
+                  />
                 </ListItem>
               ))}
             </List>
           </div>
           <div className={classes.chatWindow}>
-            {[{ from: 'user', message: 'hello' }].map((chat, index) => (
+            {allChats[activeTopic].map((chat, index) => (
               <div className={classes.flex} key={index}>
                 <Chip label={chat.from} className={classes.chip} />
-                <Typography variant="p">{chat.message}</Typography>
+                <Typography variant="subtitle1">{chat.msg}</Typography>
               </div>
             ))}
           </div>
